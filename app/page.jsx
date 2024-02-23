@@ -1,9 +1,16 @@
-import React from 'react'
+import Hero from "@/components/Hero";
+import InfoBoxes from "@/components/InfoBoxes";
+import RecentProperties from "@/components/RecentProperties";
 
 const HomePage = () => {
+  
   return (
-    <div>HomePage</div>
-  )
-}
+    <>
+      <Hero />
+      <InfoBoxes />
+      <RecentProperties />
+    </>
+  );
+};
 
-export default HomePage
+export default HomePage;
