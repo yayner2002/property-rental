@@ -4,7 +4,7 @@ import { FaBed, FaMoneyBill, FaBath, FaRulerCombined } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 
 const PropertyCard = ({ property }) => {
-  const displayRates = (rates) => {
+   const displayRates = (rates) => {
     if (rates.monthly) {
       return `${rates.monthly.toLocaleString()}/mo`;
     } else if (rates.weekly) {

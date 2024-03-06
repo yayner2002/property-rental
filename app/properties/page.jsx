@@ -1,27 +1,8 @@
 import PropertyCard from "@/components/PropertyCard";
-// import properties from "@/properties.json";
-
-// const fetchProperties = async () => {
-//   try {
-//     const response = await fetch(
-//       `${process.env.NEXT_PUBLIC_API_URL}/properties`
-//     );
-
-//     if (!response.ok) {
-//       throw new Error(data.message || "Failed to fetch properties.");
-//     }
-//     const data = await response.json();
-
-//     return data;
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
+import { fetchProperties } from "@/utils/requests";
 
 const PropertyPage = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/properties`);
-  const properties = await res.json();
-
+  const properties = await fetchProperties();
   return (
     <>
       <section className="px-4 py-6">
