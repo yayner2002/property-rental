@@ -5,7 +5,9 @@ const fetchProperties = async () => {
     if (!apiDomain) {
       return [];
     }
-    const response = await fetch(`${apiDomain}/properties`);
+    const response = await fetch(`${apiDomain}/properties`, {
+      cache: "no-store", // this will make sure that the browser does not cache the response of the fetch request instead it will make a new request to the server
+    });
 
     if (!response.ok) {
       throw new Error(data.message || "Failed to fetch properties.");
@@ -24,7 +26,7 @@ const fetchProperties = async () => {
 const fetchProperty = async (propertyId) => {
   try {
     if (!apiDomain) {
-      null;
+      return null;
     }
     const response = await fetch(`${apiDomain}/properties/${propertyId}`);
 

@@ -27,7 +27,7 @@ export const authOptions = {
       const userExists = await User.findOne({ email: profile.email });
       // If user does not exist, then add the user to the database
       if (!userExists) {
-        const username = profile.name.slice(0, 11);
+        const username = profile.name.slice(0, 20);
         const userToSave = {
           email: profile.email,
           username: username,

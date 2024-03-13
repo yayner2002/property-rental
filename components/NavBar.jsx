@@ -10,6 +10,7 @@ import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 
 const Navbar = () => {
   const { data: session } = useSession();
+  const userProfileImage = session?.user?.image;
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [providers, setProviders] = useState(null);
@@ -23,7 +24,8 @@ const Navbar = () => {
 
     getProvidersData();
   }, []);
-  console.log(providers);
+  // console.log(providers);
+  // console.log(session?.user?.image)
 
   return (
     <nav className="bg-blue-700 border-b border-blue-500">
@@ -61,8 +63,7 @@ const Navbar = () => {
           <div className="flex flex-1 items-center justify-center md:items-stretch md:justify-start">
             {/* <!-- Logo --> */}
             <Link className="flex flex-shrink-0 items-center" href="/">
-              <Image className="h-10 w-auto" src={logo} alt="YayShiyach" />
-
+              <Image className="h-10 w-auto" src={logo} alt="YayShiyach" priority />
               <span className="hidden md:block text-white text-2xl font-bold ml-2">
                 YayShiyach
               </span>
@@ -151,7 +152,7 @@ const Navbar = () => {
               </Link>
               {/* <!-- Profile dropdown button --> */}
               <div className="relative ml-3">
-                <d>
+                <div>
                   <button
                     onClick={() => setIsUserMenuOpen((prevState) => !prevState)}
                     type="button"
@@ -164,11 +165,13 @@ const Navbar = () => {
                     <span className="sr-only">Open user menu</span>
                     <Image
                       className="h-8 w-8 rounded-full"
-                      src={profileDefault}
+                      src={userProfileImage || profileDefault}
+                      width={40}
+                      height={40}
                       alt=""
                     />
                   </button>
-                </d>
+                </div>
 
                 {/* <!-- Profile dropdown --> */}
                 {isUserMenuOpen && (
@@ -186,6 +189,9 @@ const Navbar = () => {
                       role="menuitem"
                       tabIndex="-1"
                       id="user-menu-item-0"
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                      }}
                     >
                       Your Profile
                     </Link>
@@ -195,10 +201,15 @@ const Navbar = () => {
                       role="menuitem"
                       tabIndex="-1"
                       id="user-menu-item-2"
+                      onClick={() => setIsUserMenuOpen(false)}
                     >
                       Saved Properties
                     </Link>
                     <button
+                      onClick={() => {
+                        signOut();
+                        setIsUserMenuOpen(false);
+                      }}
                       className="block px-4 py-2 text-sm text-gray-700"
                       role="menuitem"
                       tabIndex="-1"

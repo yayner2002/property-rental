@@ -4,7 +4,7 @@ import { FaBed, FaMoneyBill, FaBath, FaRulerCombined } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 
 const PropertyCard = ({ property }) => {
-   const displayRates = (rates) => {
+  const displayRates = (rates) => {
     if (rates.monthly) {
       return `${rates.monthly.toLocaleString()}/mo`;
     } else if (rates.weekly) {
@@ -17,12 +17,13 @@ const PropertyCard = ({ property }) => {
   return (
     <div className="rounded-xl shadow-md relative">
       <Image
-        src={`/images/properties/${property.images[0]}`}
+        src={property.images[0]}
         alt=""
         width={0}
         height={0}
         sizes="100vw"
         className="w-full h-auto rounded-t-xl"
+        priority
       />
       <div className="p-4">
         <div className="text-left md:text-center lg:text-left mb-6">
