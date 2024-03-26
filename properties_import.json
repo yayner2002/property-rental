@@ -117,7 +117,7 @@
       "Coffee Maker"
     ],
     "rates": {
-      "nightly": 200000000,
+      "nightly": 200,
       "weekly": 750,
       "monthly": 3300
     },

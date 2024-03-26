@@ -55,7 +55,7 @@ export const POST = async (request) => {
       },
       beds: formData.get("beds"),
       baths: formData.get("baths"),
-      squareFeet: formData.get("square_feet"),
+      squareFeet: formData.get("squareFeet"),
       amenities,
       rates: {
         nightly: formData.get("rates.nightly"),
@@ -117,6 +117,6 @@ export const POST = async (request) => {
 
     // return new Response(JSON.stringify({ messge: "success" }), { status: 200 });
   } catch (error) {
-    return new Response("Failed to add propert.", { status: 500 });
+    return new Response("Failed to add property.", { status: 500 });
   }
 };

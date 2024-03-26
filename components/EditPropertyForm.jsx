@@ -1,12 +1,19 @@
 "use client";
 
+import { fetchProperty } from "@/utils/requests";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
-const PropertyAddForm = () => {
+const EditPropertyForm = () => {
+  const { propertyId } = useParams();
+  console.log(propertyId)
+  const router = useRouter();
+
   const [mounted, setMounted] = useState(false);
   const [formFields, setFormFields] = useState({
-    propertyType: "",
-    propertyName: "",
+    type: "",
+    name: "",
     description: "",
     location: {
       street: "",
@@ -28,11 +35,44 @@ const PropertyAddForm = () => {
       email: "",
       phone: "",
     },
-    images: [],
   });
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setMounted(true);
+
+    const fetchPropertyData = async () => {
+      try {
+        const propertyData = await fetchProperty(propertyId);
+        //  setFormFields({
+        //   ...propertyData,
+        //   rates: {
+        //     weekly: propertyData?.rates?.weekly || "",
+        //     monthly: propertyData?.rates?.monthly || "",
+        //     nightly: propertyData?.rates?.nightly || "",
+        //   }
+        //  })
+
+        if (propertyData && propertyData.rates) {
+          const initialRates = { ...propertyData.rates };
+          for (const property in initialRates) {
+            if (initialRates[property] === null) {
+              initialRates[property] = "";
+            }
+          }
+
+          propertyData.rates = initialRates;
+        }
+        setFormFields(propertyData);
+      } catch (error) {
+        console.log(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPropertyData();
   }, []);
 
   const handleFieldsChange = (e) => {
@@ -68,59 +108,56 @@ const PropertyAddForm = () => {
       }
     }
     // update the state with the updated array
-
     setFormFields((prevFormFieldsValue) => ({
       ...prevFormFieldsValue,
       amenities: updatedAmenities,
     }));
   };
 
-  const handleImagesChange = (e) => {
-    const { files } = e.target;
-    // clone the array of files into a new array
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    const updatedImages = [...formFields.images];
+    try {
+      const formData = new FormData(e.target);
 
-    // loop through the files and add them to the  new array
+      const res = await fetch(`/api/properties/${propertyId}`, {
+        method: "PUT",
+        body: formData,
+      });
 
-    for (let i = 0; i < files.length; i++) {
-      updatedImages.push(files[i]);
+      if (res.status === 200) {
+        toast.success("Property Updated Successfully");
+        router.push(`/properties/${propertyId}`);
+      } else if (res.status === 401 || res.status === 403) {
+        toast.error("Access Denied");
+      } else if (res.status === 404) {
+        toast.error("Cannot Find Property");
+      } else {
+        toast.error("Something Went Wrong");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Something Went Wrong");
     }
-
-    // for (const file of files) {
-    //   updatedImages.push(file);
-    // }
-
-    // update the state
-
-    setFormFields((prevFormFieldsValue) => ({
-      ...prevFormFieldsValue,
-      images: updatedImages,
-    }));
   };
+
   return (
-    mounted && (
-      <form
-        action="/api/properties"
-        method="POST"
-        encType="multipart/form-data"
-      >
+    mounted &&
+    !loading && (
+      <form onSubmit={handleSubmit}>
         <h2 className="text-3xl text-center font-semibold mb-6">
-          Add Property
+          Edit Property
         </h2>
 
         <div className="mb-4">
-          <label
-            htmlFor="propertyType"
-            className="block text-gray-700 font-bold mb-2"
-          >
+          <label htmlFor="type" className="block text-gray-700 font-bold mb-2">
             Property Type
           </label>
           <select
-            value={formFields.propertyType}
+            value={formFields.type}
             onChange={handleFieldsChange}
-            id="propertyType"
-            name="propertyType"
+            id="type"
+            name="type"
             className="border rounded w-full py-2 px-3"
             required
           >
@@ -134,18 +171,15 @@ const PropertyAddForm = () => {
           </select>
         </div>
         <div className="mb-4">
-          <label
-            htmlFor="propertyName"
-            className="block text-gray-700 font-bold mb-2"
-          >
+          <label htmlFor="name" className="block text-gray-700 font-bold mb-2">
             Listing Name
           </label>
           <input
-            value={formFields.propertyName}
+            value={formFields.name}
             onChange={handleFieldsChange}
             type="text"
-            id="propertyName"
-            name="propertyName"
+            id="name"
+            name="name"
             className="border rounded w-full py-2 px-3 mb-2"
             placeholder="eg. Beautiful Apartment In Miami"
             required
@@ -557,31 +591,12 @@ const PropertyAddForm = () => {
           />
         </div>
 
-        <div className="mb-4">
-          <label
-            htmlFor="images"
-            className="block text-gray-700 font-bold mb-2"
-          >
-            Images (Select up to 4 images)
-          </label>
-          <input
-            onChange={handleImagesChange}
-            type="file"
-            id="images"
-            name="images"
-            className="border rounded w-full py-2 px-3"
-            accept="image/*"
-            multiple
-            required
-          />
-        </div>
-
         <div>
           <button
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
             type="submit"
           >
-            Add Property
+            Update Property
           </button>
         </div>
       </form>
@@ -589,4 +604,4 @@ const PropertyAddForm = () => {
   );
 };
 
-export default PropertyAddForm;
+export default EditPropertyForm;

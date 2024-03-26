@@ -7,6 +7,7 @@ import {
   FaRulerCombined,
   FaTimes,
 } from "react-icons/fa";
+import PropertyMap from "@/components/PropertyMap";
 
 const PropertyDetail = ({ property }) => {
   return (
@@ -30,8 +31,13 @@ const PropertyDetail = ({ property }) => {
             <div className="flex items-center justify-center mb-4 border-b border-gray-200 md:border-b-0 pb-4 md:pb-0">
               <div className="text-gray-500 mr-2 font-bold">Nightly</div>
               <div className="text-2xl font-bold">
-                {property.rates.nightly && `$${property.rates.nightly}`}
-                {!property.rates.nightly && (
+                {property.rates.nightly >= 1 ? (
+                  `$${property.rates.nightly}`
+                ) : (
+                  <FaTimes className="inline-block text-red-500" />
+                )}
+
+                {property.rates.nightly === "null" && (
                   <FaTimes className="inline-block text-red-500" />
                 )}
               </div>
@@ -39,8 +45,9 @@ const PropertyDetail = ({ property }) => {
             <div className="flex items-center justify-center mb-4 border-b border-gray-200 md:border-b-0 pb-4 md:pb-0">
               <div className="text-gray-500 mr-2 font-bold">Weekly</div>
               <div className="text-2xl font-bold text-blue-500">
-                {property.rates.weekly && `$${property.rates.weekly}`}
-                {!property.rates.weekly && (
+                {property.rates.weekly >= 1 ? (
+                  `$${property.rates.weekly}`
+                ) : (
                   <FaTimes className="inline-block text-red-500" />
                 )}
               </div>
@@ -48,8 +55,9 @@ const PropertyDetail = ({ property }) => {
             <div className="flex items-center justify-center mb-4 pb-4 md:pb-0">
               <div className="text-gray-500 mr-2 font-bold">Monthly</div>
               <div className="text-2xl font-bold text-blue-500">
-                {property.rates.monthly && `$${property.rates.monthly}`}
-                {!property.rates.monthly && (
+                {property.rates.monthly >= 1 ? (
+                  `$${property.rates.monthly}`
+                ) : (
                   <FaTimes className="inline-block text-red-500" />
                 )}
               </div>
@@ -62,20 +70,33 @@ const PropertyDetail = ({ property }) => {
           <div className="flex justify-center gap-4 text-blue-500 mb-4 text-xl space-x-9">
             <p>
               <FaBed className="inline-block mr-2" />
-              {property.beds}{" "}
+              {property.beds > 0 ? property.beds : ""}{" "}
               <span className="hidden sm:inline">
-                {property.beds > 1 ? "Beds" : "Bed"}
+                {property.beds > 1 ? (
+                  "Beds"
+                ) : property.beds === 0 ? (
+                  <FaTimes className="inline-block text-red-500" />
+                ) : (
+                  "Bed"
+                )}
               </span>
             </p>
             <p>
-              <FaBath className="inline-block mr-2" /> {property.baths}{" "}
+              <FaBath className="inline-block mr-2" />{" "}
+              {property.baths > 0 ? property.baths : ""}{" "}
               <span className="hidden sm:inline">
-                {property.baths > 1 ? "Baths" : "Bath"}
+                {property.baths > 1 ? (
+                  "Baths"
+                ) : property.baths === 0 ? (
+                  <FaTimes className="inline-block text-red-500" />
+                ) : (
+                  "Bath"
+                )}
               </span>
             </p>
             <p>
               <FaRulerCombined className="inline-block mr-2" />
-              {property.square_feet}{" "}
+              {property.square_feet > 0 ? property.square_feet : ""}{" "}
               <span className="hidden sm:inline">Sqrft</span>
             </p>
           </div>
@@ -95,7 +116,9 @@ const PropertyDetail = ({ property }) => {
           </ul>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md mt-6">
-          <div id="map"></div>
+          <div id="map" className="bg-white p-6 rounded-lg shadow-md mt-6">
+            <PropertyMap property={property} />
+          </div>
         </div>
       </main>
     </>
