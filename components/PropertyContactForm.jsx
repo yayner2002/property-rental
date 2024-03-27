@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { FaPaperPlane } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const PropertyContactForm = ({ property }) => {
   const [contacFormFields, setContactFormFields] = useState({
@@ -13,7 +14,7 @@ const PropertyContactForm = ({ property }) => {
 
   const [wasSubmitted, setWasSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const { name, email, phone, message } = contacFormFields;
@@ -27,7 +28,37 @@ const PropertyContactForm = ({ property }) => {
       recipient: property.owner,
     };
 
-    console.log(messageData);
+    // send a post http request to /api/messages with the messageData as a body
+    try {
+      const res = await fetch(`/api/messages`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(messageData),
+      });
+
+      if (res.status === 200) {
+        const data = await res.json();
+        toast.success(data.message);
+        setWasSubmitted(true);
+      } else if (res.status === 401 || res.status === 400) {
+        const data = await res.json();
+        toast.error(data.message);
+      } else {
+        toast.error("An error occurred. Please try again.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setContactFormFields({
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
+    }
   };
 
   const handleChange = (e) => {

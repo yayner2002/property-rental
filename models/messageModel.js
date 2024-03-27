@@ -3,17 +3,17 @@ import mongoose from "mongoose";
 const messageSchema = new mongoose.Schema(
   {
     sender: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
     recipient: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
     property: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Property",
       required: true,
     },
@@ -22,7 +22,7 @@ const messageSchema = new mongoose.Schema(
       required: [true, "Name is Required"],
     },
     email: {
-      type: stringify,
+      type: String,
       required: [true, "Email is Required"],
     },
     phone: {
